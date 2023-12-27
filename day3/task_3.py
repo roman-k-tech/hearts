@@ -1,4 +1,5 @@
 from typing import Any
+import datetime
 
 
 class Author:
@@ -21,6 +22,11 @@ class Author:
                 other.second_name and self.year_of_birth == other.year_of_birth:
             return True
 
+        return False
+
+    def __hash__(self):
+        return hash(self.first_name + self.second_name + str(self.year_of_birth))
+
 
 class Genre:
     def __init__(self, genre: str, genre_desc: str):
@@ -35,29 +41,32 @@ class Genre:
 
 
 class Book:
-    def __init__(self, **kwargs: str | list):
-        self.title: str | None = None
-        self.description: str | None = None
-        self.lang: str | None = None
-        self.authors: list[Author, ...] | None = None
-        self.genres: list[Genre, ...] | None = None
-        self.year: int | None = None
-        self.isbn: int | None = None
+    def __init__(self, title: str, language: str, year: int, *authors: Author,
+                 description: str | None = None, isbn: int | None = None, genres: list[Genre] | None = None):
+        self.title = title
+        self.language = language
+        self.year = year
 
-        self.possible_attrs = ['title', 'description', 'lang', 'authors', 'genres', 'year', 'isbn']
-        self.set_attributes(**kwargs)
+        if not authors:
+            raise ValueError('Author is not specified. At least one author should be specified.')
+        if any(type(author) is not Author for author in authors):
+            raise TypeError('Invalid author specified.')
+        self.authors = authors
 
-    def set_attributes(self, **kwargs: str | list) -> None:
+        self.description = description
+        self.isbn = isbn
 
-        """
-        sets book attributes,  possible keys: 'title', 'description', 'lang', 'authors', 'genres', 'year', 'isbn'
-        """
+        if genres is not None and type(genres) not in (list, tuple):
+            genres = [genres]
 
-        for attribute, value in kwargs.items():
-            if attribute not in self.possible_attrs:
-                raise AttributeError('incorrect attribute: ' + attribute)
+            if any(type(genre) is not Genre for genre in genres):
+                raise TypeError('Invalid genre specified.')
+        self.genres = genres
 
-            setattr(self, attribute, value)
+    def get_age(self):
+        current_year = datetime.date.today().year
+
+        return current_year - self.year
 
     def __str__(self):
         return '{}: {}'.format(self.title, ', '.join(str(author) for author in self.authors))
@@ -69,7 +78,15 @@ class Book:
         if self.__class__ is not type(other):
             return False
 
-        if self.title == other.title and self.authors == other.authors:
+        if self.title == other.title and set(self.authors) == set(other.authors):
             return True
 
         return False
+
+
+# a1 = Author('qqqq', 'qqq1', 1234)
+# a2 = Author('wwww', 'www2', 1234)
+#
+# print({a1} == {a1, a2})
+#
+# print(Book('qqqq', 'wwww', 1234, a1).get_age())
