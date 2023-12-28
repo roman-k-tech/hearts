@@ -3,6 +3,7 @@ import datetime
 
 
 class Author:
+
     def __init__(self, first_name: str, second_name: str, year_of_birth: int):
         self.first_name = first_name
         self.second_name = second_name
@@ -18,8 +19,9 @@ class Author:
         if self.__class__ is not type(other):
             return False
 
-        if self.first_name == other.first_name and self.second_name == \
-                other.second_name and self.year_of_birth == other.year_of_birth:
+        if (self.first_name == other.first_name
+                and self.second_name == other.second_name
+                and self.year_of_birth == other.year_of_birth):
             return True
 
         return False
@@ -29,6 +31,7 @@ class Author:
 
 
 class Genre:
+
     def __init__(self, genre: str, genre_desc: str):
         self.genre = genre
         self.genre_desc = genre_desc
@@ -41,7 +44,8 @@ class Genre:
 
 
 class Book:
-    def __init__(self, title: str, language: str, year: int, *authors: Author,
+    
+    def __init__(self, title: str, language: str, year: int, /, *authors: Author,
                  description: str | None = None, isbn: int | None = None, genres: list[Genre] | None = None):
         self.title = title
         self.language = language
@@ -64,6 +68,7 @@ class Book:
         self.genres = genres
 
     def get_age(self):
+        """returns book's age"""
         current_year = datetime.date.today().year
 
         return current_year - self.year
@@ -84,9 +89,9 @@ class Book:
         return False
 
 
-# a1 = Author('qqqq', 'qqq1', 1234)
+a1 = Author('qqqq', 'qqq1', 1234)
 # a2 = Author('wwww', 'www2', 1234)
 #
 # print({a1} == {a1, a2})
 #
-# print(Book('qqqq', 'wwww', 1234, a1).get_age())
+print(Book('qqqq', 'wwww', 1234, a1, description='zzzz').get_age())
