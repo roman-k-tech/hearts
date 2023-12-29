@@ -56,6 +56,8 @@ class Card:
 
     def __str__(self):
 
+        """generates card as coloured string"""
+
         card_str = '{:3}'.format(self.suit + self.rank)
         if self.colour is not None:
             card_str = '{}{}{}'.format(self.colour, card_str, Style.RESET_ALL)
@@ -105,7 +107,6 @@ class Game:
     def __init__(self, *names: str) -> None:
         deck = Deck.create(shuffle=True)
 
-        # names = 'ert',
         self.names = list(names + self.PLAYERS)[:4]
 
         self.hands = {n: Player(n, h) for n, h in zip(self.names, deck.deal(4))}
