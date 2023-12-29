@@ -44,7 +44,7 @@ class Genre:
 
 
 class Book:
-    
+
     def __init__(self, title: str, language: str, year: int, /, *authors: Author,
                  description: str | None = None, isbn: int | None = None, genres: list[Genre] | None = None):
         self.title = title
